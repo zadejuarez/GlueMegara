@@ -36,10 +36,11 @@ import megaradrp.datamodel as dm
 import matplotlib.cm
 
 from glue.core.state_objects import StateAttributeLimitsHelper
+from glue.core.subset import RoiSubsetState
 
 
 
-class TutorialViewerState(MatplotlibDataViewerState):
+class MegaraViewerState(MatplotlibDataViewerState):
 
     z_att = SelectionCallbackProperty(docstring='The attribute to use on the z-axis')
     #y_att = SelectionCallbackProperty(docstring='The attribute to use on the y-axis')
@@ -50,7 +51,7 @@ class TutorialViewerState(MatplotlibDataViewerState):
     
 
     def __init__(self, *args, **kwargs):
-        super(TutorialViewerState, self).__init__(*args, **kwargs)
+        super(MegaraViewerState, self).__init__(*args, **kwargs)
         self._z_att_helper = ComponentIDComboHelper(self, 'z_att')
         #self._y_att_helper = ComponentIDComboHelper(self, 'y_att')
         
@@ -91,7 +92,7 @@ class TutorialViewerState(MatplotlibDataViewerState):
          #   self.y_axislabel = self.y_att.label
 
 
-class TutorialLayerState(MatplotlibLayerState):
+class MegaraLayerState(MatplotlibLayerState):
     grid = CallbackProperty(False, docstring='Plot grid')
     
     grayscale = CallbackProperty(False, docstring='grayscale')
@@ -118,7 +119,7 @@ class TutorialLayerState(MatplotlibLayerState):
         
         #self.uuid = str(uuid.uuid4())
 
-        super(TutorialLayerState, self).__init__(layer=layer, viewer_state=viewer_state)
+        super(MegaraLayerState, self).__init__(layer=layer, viewer_state=viewer_state)
 
         self.attribute_lim_helper = StateAttributeLimitsHelper(self, attribute='attribute',
                                                                 percentile='percentile',
@@ -131,8 +132,8 @@ class TutorialLayerState(MatplotlibLayerState):
         stretch_display = {'linear': 'Linear','sqrt': 'Square Root','asinh': 'Arcsinh',
                              'log': 'Logarithmic'}
         
-        TutorialLayerState.stretch.set_choices(self, ['linear', 'sqrt', 'asinh', 'log'])
-        TutorialLayerState.stretch.set_display_func(self, stretch_display.get)
+        MegaraLayerState.stretch.set_choices(self, ['linear', 'sqrt', 'asinh', 'log'])
+        MegaraLayerState.stretch.set_display_func(self, stretch_display.get)
         
         percentile_display = {100: 'Min/Max',
                                   99.5: '99.5%',
@@ -141,18 +142,18 @@ class TutorialLayerState(MatplotlibLayerState):
                                   90: '90%',
                                   'Custom': 'Custom'}
         
-        TutorialLayerState.percentile.set_choices(self, [100, 99.5, 99, 95, 90, 'Custom'])
-        TutorialLayerState.percentile.set_display_func(self, percentile_display.get)
+        MegaraLayerState.percentile.set_choices(self, [100, 99.5, 99, 95, 90, 'Custom'])
+        MegaraLayerState.percentile.set_display_func(self, percentile_display.get)
 
 
 
-class TutorialLayerArtist(MatplotlibLayerArtist):
+class MegaraLayerArtist(MatplotlibLayerArtist):
 
-    _layer_state_cls = TutorialLayerState
+    _layer_state_cls = MegaraLayerState
 
     def __init__(self, axes, *args, **kwargs):
 
-        super(TutorialLayerArtist, self).__init__(axes, *args, **kwargs)
+        super(MegaraLayerArtist, self).__init__(axes, *args, **kwargs)
 
         self.artist = vis.hexplot(axes, [], [], [], scale=0.443)
         self.mpl_artists.append(self.artist)
@@ -365,11 +366,11 @@ class TutorialLayerArtist(MatplotlibLayerArtist):
         self._on_visual_change()
 
 
-class TutorialViewerStateWidget(QWidget):
+class MegaraViewerStateWidget(QWidget):
 
     def __init__(self, viewer_state=None, session=None):
 
-        super(TutorialViewerStateWidget, self).__init__()
+        super(MegaraViewerStateWidget, self).__init__()
 
         # self.ui = load_ui('viewer_state.ui', self,
         #                   directory=os.getcwd())
@@ -417,7 +418,7 @@ class TutorialViewerStateWidget(QWidget):
             label.setText("Value Changed Signal")
       
         
-        layout = QVBoxLayout()
+        layout = QVBoxLayout() 
         layout.addWidget(d_spin1)
         layout.addWidget(d_spin2)
 
@@ -432,11 +433,11 @@ class TutorialViewerStateWidget(QWidget):
 
 
 
-class TutorialLayerStateWidget(QWidget):
+class MegaraLayerStateWidget(QWidget):
 
     def __init__(self, layer_artist):
 
-        super(TutorialLayerStateWidget, self).__init__()
+        super(MegaraLayerStateWidget, self).__init__()
 
         self.checkbox = QCheckBox('Plot grid')
         self.checkbox2 = QCheckBox('Grayscale')
@@ -484,14 +485,62 @@ class TutorialLayerStateWidget(QWidget):
 
 
 
-class TutorialDataViewer(MatplotlibDataViewer):
+# class TutorialDataViewer(MatplotlibDataViewer):
 
-    LABEL = 'Tutorial viewer'
-    _state_cls = TutorialViewerState
-    _options_cls = TutorialViewerStateWidget
-    _layer_style_widget_cls = TutorialLayerStateWidget
-    _data_artist_cls = TutorialLayerArtist
-    _subset_artist_cls = TutorialLayerArtist
+#     LABEL = 'Tutorial viewer'
+#     _state_cls = TutorialViewerState
+#     _options_cls = TutorialViewerStateWidget
+#     _layer_style_widget_cls = TutorialLayerStateWidget
+#     _data_artist_cls = TutorialLayerArtist
+#     _subset_artist_cls = TutorialLayerArtist
+    
+    
+class MegaraDataViewer(MatplotlibDataViewer):
+
+    LABEL = 'MEGARA viewer'
+    _state_cls = MegaraViewerState
+    _options_cls = MegaraViewerStateWidget
+    _layer_style_widget_cls = MegaraLayerStateWidget
+    _data_artist_cls = MegaraLayerArtist
+    _subset_artist_cls = MegaraLayerArtist
+    # _toolbar_cls = BasicToolbar
+
+    inherit_tools = True
+    tools = ['select:rectangle']
+
+    def apply_roi(self, roi, override_mode=None):
+        from glue.core.subset import roi_to_subset_state
+        print("METHOD APPLY ROI")
+        print(roi, type(roi))
+        print(override_mode)
+
+        use_transform = False
+        subset_state = roi_to_subset_state(roi,
+                                          x_att=self.state.x_att, x_categories=self.state.x_categories,
+                                          y_att=self.state.y_att, y_categories=self.state.y_categories,
+                                          use_pretransform=use_transform)
+
+        subset_state = RoiSubsetState()
+        subset_state.xatt = [-1, 0, 1]
+        subset_state.yatt = [-1, 0, 1]
+
+        self.apply_subset_state(subset_state, override_mode=override_mode)
+
+    
 
 
-qt_client.add(TutorialDataViewer)
+
+
+
+
+
+qt_client.add(MegaraDataViewer)
+
+
+
+
+
+
+
+
+

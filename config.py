@@ -274,7 +274,7 @@ class MegaraLayerArtist(MatplotlibLayerArtist):
         z = self.state.layer[self._viewer_state.z_att]
         #y = self.state.layer[self._viewer_state.y_att]
         
-        x1 = self.state.layer[self._viewer_state.x1_att]
+        #x1 = self.state.layer[self._viewer_state.x1_att]
         
         # if self._viewer_state.d_spin1 is None or self._viewer_state.d_spin2 is None:
         #     return
@@ -394,28 +394,28 @@ class MegaraViewerStateWidget(QWidget):
         label = QLabel("Spectral range", self)
         label.setWordWrap(True)
         
-        # d_spin1.valueChanged.connect(lambda: spin1_method())
-        # d_spin2.valueChanged.connect(lambda: spin2_method())
+        d_spin1.valueChanged.connect(lambda: spin1_method())
+        d_spin2.valueChanged.connect(lambda: spin2_method())
 
-
-        # def spin1_method():
-  
-        #     # setting text to the label
-        #     label.setText("Value Changed Signal")
-            
-        # def spin2_method():
-  
-        #     # setting text to the label
-        #     label.setText("Value 2 Changed Signal")
-        
-        d_spin1.editingFinished.connect(lambda: spin1_method())
 
         def spin1_method():
   
-        # getting current value of spin box
+            # setting text to the label
+            label.setText("Value Changed Signal")
+            
+        def spin2_method():
+  
+            # setting text to the label
+            label.setText("Value 2 Changed Signal")
+        
+        # d_spin1.editingFinished.connect(lambda: spin1_method())
+
+        # def spin1_method():
+  
+        # # getting current value of spin box
             
       
-            label.setText("Value Changed Signal")
+        #     label.setText("Value Changed Signal")
       
         
         layout = QVBoxLayout() 
@@ -509,16 +509,16 @@ class MegaraDataViewer(MatplotlibDataViewer):
     tools = ['select:rectangle']
 
     def apply_roi(self, roi, override_mode=None):
-        from glue.core.subset import roi_to_subset_state
+        #from glue.core.subset import roi_to_subset_state
         print("METHOD APPLY ROI")
         print(roi, type(roi))
         print(override_mode)
 
-        use_transform = False
-        subset_state = roi_to_subset_state(roi,
-                                          x_att=self.state.x_att, x_categories=self.state.x_categories,
-                                          y_att=self.state.y_att, y_categories=self.state.y_categories,
-                                          use_pretransform=use_transform)
+        #use_transform = False
+        # subset_state = roi_to_subset_state(roi,
+        #                                   x_att=self.state.x_att, x_categories=self.state.x_categories,
+        #                                   y_att=self.state.y_att, y_categories=self.state.y_categories,
+        #                                   use_pretransform=use_transform)
 
         subset_state = RoiSubsetState()
         subset_state.xatt = [-1, 0, 1]
@@ -527,10 +527,13 @@ class MegaraDataViewer(MatplotlibDataViewer):
         self.apply_subset_state(subset_state, override_mode=override_mode)
 
     
-
-
-
-
+        def plot_subset(self, axes, x, y, style):
+                axes.plot(x, y, 'o',
+                          alpha=style.alpha,
+                          mec=style.color,
+                          mfc=style.color,
+                          ms=style.markersize)
+        
 
 
 

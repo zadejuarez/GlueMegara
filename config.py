@@ -484,15 +484,6 @@ class MegaraLayerStateWidget(QWidget):
         self._conn6 = connect_combo_selection(self.layer_state, 'percentile', self.percentile)
 
 
-
-# class TutorialDataViewer(MatplotlibDataViewer):
-
-#     LABEL = 'Tutorial viewer'
-#     _state_cls = TutorialViewerState
-#     _options_cls = TutorialViewerStateWidget
-#     _layer_style_widget_cls = TutorialLayerStateWidget
-#     _data_artist_cls = TutorialLayerArtist
-#     _subset_artist_cls = TutorialLayerArtist
     
     
 class MegaraDataViewer(MatplotlibDataViewer):
@@ -527,12 +518,12 @@ class MegaraDataViewer(MatplotlibDataViewer):
         self.apply_subset_state(subset_state, override_mode=override_mode)
 
     
-        def plot_subset(self, axes, x, y, style):
-                axes.plot(x, y, 'o',
-                          alpha=style.alpha,
-                          mec=style.color,
-                          mfc=style.color,
-                          ms=style.markersize)
+    def plot_subset(self, axes, x0, y0, style):
+            axes.plot(x0, y0, 'o',
+                      alpha=style.alpha,
+                      mec=style.color,
+                      mfc=style.color,
+                      ms=style.markersize)
         
 
 

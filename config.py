@@ -37,7 +37,7 @@ import matplotlib.cm
 
 from glue.core.state_objects import StateAttributeLimitsHelper
 from glue.core.subset import RoiSubsetState
-
+from glue.core.roi import RectangularROI
 
 
 class MegaraViewerState(MatplotlibDataViewerState):
@@ -502,6 +502,7 @@ class MegaraDataViewer(MatplotlibDataViewer):
     def apply_roi(self, roi, override_mode=None):
         #from glue.core.subset import roi_to_subset_state
         print("METHOD APPLY ROI")
+        roi = RectangularROI(xmin=1, xmax=3, ymin=2, ymax=5)
         print(roi, type(roi))
         print(override_mode)
 
@@ -514,9 +515,28 @@ class MegaraDataViewer(MatplotlibDataViewer):
         subset_state = RoiSubsetState()
         subset_state.xatt = [-1, 0, 1]
         subset_state.yatt = [-1, 0, 1]
+        
+        # from glue.core import Data
+        # data = Data(x=[1,2,3], y=[2,3,4])
+        # state = data.id['x'] > 1.5
+        # state
 
         self.apply_subset_state(subset_state, override_mode=override_mode)
 
+
+        
+        
+        from glue.core import Data
+        data = Data(x=[1,2,3], y=[2,3,4])
+        state = data.id['x'] > 1.5
+        # state
+        
+        from glue.core import DataCollection
+        data_collection = DataCollection([data])
+        subset_group = data_collection.new_subset_group('x > 1.5', state)
+
+        subset = subset_group.subsets[0]
+        subset
     
     def plot_subset(self, axes, x0, y0, style):
             axes.plot(x0, y0, 'o',

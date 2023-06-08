@@ -506,9 +506,44 @@ class MegaraDataViewer(MatplotlibDataViewer):
     def apply_roi(self, roi, override_mode=None):
         #from glue.core.subset import roi_to_subset_state
         print("METHOD APPLY ROI")
-        roi = RectangularROI(xmin=1, xmax=3, ymin=2, ymax=5)
+        ##roi = RectangularROI(xmin=1, xmax=3, ymin=2, ymax=5)
         print(roi, type(roi))
         print(override_mode)
+        
+        datos = self.state.z_att
+        axis0 = datos.component[0]
+        subset_state = axis0 > 300
+        #subset_state = (axis0 == 1 ) & (axis0 == 20) & (axis0 > 300)
+        fibs = [1, 23, 45, 56, 89, 200]
+        subset_state = None
+        
+        
+        for f in fibs:
+            subset_state = subset_state & (axis0 == f)
+            
+        import megaradrp.datamodel as dm
+        
+        fp_conf=dm.get_fiberconf_default('LCB')
+        x0 = np.empty((fp_conf.nfibers,))
+        y0 = np.empty((fp_conf.nfibers,))
+        
+        # Bucle para sacar las coordenadas de todas las fibras 
+        
+        # xfib, yfib   
+        for _, fiber in sorted(fp_conf.fibers.items()):
+            idx = fiber.fibid - 1
+            x0[idx] = fiber.x
+            y0[idx] = fiber.y
+        
+        
+        # mask = roi.contains(x0, y0)
+        # ss = [axis0 == f for f in fibs[mask]]
+        # fibs a partir de mask
+        subset_state = None
+        for f in fibs:
+             subset_state = subset_state & (axis0 == f)
+             
+        self.apply_subset_state(subset_state,override_mode=override_mode)
 
         #use_transform = False
         # subset_state = roi_to_subset_state(roi,
@@ -516,88 +551,90 @@ class MegaraDataViewer(MatplotlibDataViewer):
         #                                   y_att=self.state.y_att, y_categories=self.state.y_categories,
         #                                   use_pretransform=use_transform)
 
-        subset_state = RoiSubsetState()
-        subset_state.xatt = [-1, 0, 1]
-        subset_state.yatt = [-1, 0, 1]
+        # subset_state = RoiSubsetState()
+        # subset_state.xatt = [-1, 0, 1]
+        # subset_state.yatt = [-1, 0, 1]
         
-        # from glue.core import Data
-        # data = Data(x=[1,2,3], y=[2,3,4])
-        # state = data.id['x'] > 1.5
-        # state
+        # # from glue.core import Data
+        # # data = Data(x=[1,2,3], y=[2,3,4])
+        # # state = data.id['x'] > 1.5
+        # # state
 
-        self.apply_subset_state(subset_state, override_mode=override_mode)
+        # self.apply_subset_state(subset_state, override_mode=override_mode)
 
 
         
+# =============================================================================
+#         
+#         from glue.core import Data
+#         data = Data(x=[1,2,3], y=[2,3,4])
+#         state = data.id['x'] > 1.5
+#         # state
+#         
+#         from glue.core import DataCollection
+#         data_collection = DataCollection([data])
+#         subset_group = data_collection.new_subset_group('x > 1.5', state)
+# 
+#         subset = subset_group.subsets[0]
+#         subset
+#     
+#     def plot_subset(self, axes, x0, y0, style):
+#             axes.plot(x0, y0, 'o',
+#                       alpha=style.alpha,
+#                       mec=style.color,
+#                       mfc=style.color,
+#                       ms=style.markersize)
+# =============================================================================
         
-        from glue.core import Data
-        data = Data(x=[1,2,3], y=[2,3,4])
-        state = data.id['x'] > 1.5
-        # state
-        
-        from glue.core import DataCollection
-        data_collection = DataCollection([data])
-        subset_group = data_collection.new_subset_group('x > 1.5', state)
+# @link_helper(category="Join")
+# class JoinLink(LinkCollection):
+#     cid_independent = False
 
-        subset = subset_group.subsets[0]
-        subset
-    
-    def plot_subset(self, axes, x0, y0, style):
-            axes.plot(x0, y0, 'o',
-                      alpha=style.alpha,
-                      mec=style.color,
-                      mfc=style.color,
-                      ms=style.markersize)
-        
-@link_helper(category="Join")
-class JoinLink(LinkCollection):
-    cid_independent = False
+#     display = "Join on ID"
+#     description = "Join two datasets on a common ID. Other links \
+# in glue connect data columns (two datasets have 'age' columns but \
+# the rows are different objects), while Join on ID connects the same \
+# rows/items across two datasets."
 
-    display = "Join on ID"
-    description = "Join two datasets on a common ID. Other links \
-in glue connect data columns (two datasets have 'age' columns but \
-the rows are different objects), while Join on ID connects the same \
-rows/items across two datasets."
+#     labels1 = ["Identifier in dataset 1"]
+#     labels2 = ["Identifier in dataset 2"]
 
-    labels1 = ["Identifier in dataset 1"]
-    labels2 = ["Identifier in dataset 2"]
+#     def __init__(self, *args, cids1=None, cids2=None, data1=None, data2=None):
+#         # only support linking by one value now, even though link_by_value supports multiple
+#         assert len(cids1) == 1
+#         assert len(cids2) == 1
 
-    def __init__(self, *args, cids1=None, cids2=None, data1=None, data2=None):
-        # only support linking by one value now, even though link_by_value supports multiple
-        assert len(cids1) == 1
-        assert len(cids2) == 1
+#         self.data1 = data1
+#         self.data2 = data2
+#         self.cids1 = cids1
+#         self.cids2 = cids2
 
-        self.data1 = data1
-        self.data2 = data2
-        self.cids1 = cids1
-        self.cids2 = cids2
+#         self._links = []
 
-        self._links = []
+#     def __str__(self):
+#         # The >< here is one symbol for a database join
+#         return '%s >< %s' % (self.cids1, self.cids2)
 
-    def __str__(self):
-        # The >< here is one symbol for a database join
-        return '%s >< %s' % (self.cids1, self.cids2)
+#     def __repr__(self):
+#         return "<JoinLink: %s>" % self
 
-    def __repr__(self):
-        return "<JoinLink: %s>" % self
+#     # Define __eq__ and __ne__ to facilitate removing
+#     # these kinds of links from the link_manager
+#     def __eq__(self, other):
+#         if not isinstance(other, JoinLink):
+#             return False
+#         same = ((self.data1 == other.data1) and
+#                 (self.data2 == other.data2) and
+#                 (self.cids1 == other.cids1) and
+#                 (self.cids2 == other.cids2))
+#         flip = ((self.data1 == other.data2) and
+#                 (self.data2 == other.data1) and
+#                 (self.cids1 == other.cids2) and
+#                 (self.cids2 == other.cids1))
+#         return same or flip
 
-    # Define __eq__ and __ne__ to facilitate removing
-    # these kinds of links from the link_manager
-    def __eq__(self, other):
-        if not isinstance(other, JoinLink):
-            return False
-        same = ((self.data1 == other.data1) and
-                (self.data2 == other.data2) and
-                (self.cids1 == other.cids1) and
-                (self.cids2 == other.cids2))
-        flip = ((self.data1 == other.data2) and
-                (self.data2 == other.data1) and
-                (self.cids1 == other.cids2) and
-                (self.cids2 == other.cids1))
-        return same or flip
-
-    def __ne__(self, other):
-        return not self.__eq__(other)
+#     def __ne__(self, other):
+#         return not self.__eq__(other)
 
 
 qt_client.add(MegaraDataViewer)

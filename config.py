@@ -510,18 +510,19 @@ class MegaraDataViewer(MatplotlibDataViewer):
         print(roi, type(roi))
         print(override_mode)
         
-        datos = self.state.z_att
+        datos = self.state.z_att.parent
+        print(datos, type(datos))
         axis0 = datos.component[0]
-        subset_state = axis0 > 300
-        #subset_state = (axis0 == 1 ) & (axis0 == 20) & (axis0 > 300)
+        subset_state = datos > 300
+        subset_state = (axis0 == 1 ) & (axis0 == 20) & (axis0 > 300)
         fibs = [1, 23, 45, 56, 89, 200]
         subset_state = None
         
         
         for f in fibs:
-            subset_state = subset_state & (axis0 == f)
+            subset_state = subset_state & (datos == f)
             
-        import megaradrp.datamodel as dm
+        # import megaradrp.datamodel as dm
         
         fp_conf=dm.get_fiberconf_default('LCB')
         x0 = np.empty((fp_conf.nfibers,))
@@ -536,8 +537,8 @@ class MegaraDataViewer(MatplotlibDataViewer):
             y0[idx] = fiber.y
         
         
-        # mask = roi.contains(x0, y0)
-        # ss = [axis0 == f for f in fibs[mask]]
+        mask = roi.contains(x0, y0)
+        subset_state = [axis0 == f for f in fibs[mask]]
         # fibs a partir de mask
         subset_state = None
         for f in fibs:

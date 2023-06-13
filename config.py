@@ -36,11 +36,12 @@ import megaradrp.datamodel as dm
 import matplotlib.cm
 
 from glue.core.state_objects import StateAttributeLimitsHelper
-from glue.core.subset import RoiSubsetState
+from glue.core.subset import RoiSubsetState, Subset
 from glue.core.roi import RectangularROI
 
 from glue.config import link_helper
 from glue.core.link_helpers import LinkCollection
+
 
 
 
@@ -197,9 +198,12 @@ class MegaraLayerArtist(MatplotlibLayerArtist):
         self._viewer_state.add_callback('d_spin2', self._on_attribute_change)
 
 
+    def _on_visual_change(self, value=None):
+        pass
+
         
 
-    def _on_visual_change(self, value=None):
+    def _on_visual_change_(self, value=None):
         
         print('on visual change')
                 
@@ -274,63 +278,10 @@ class MegaraLayerArtist(MatplotlibLayerArtist):
 
         #if self._viewer_state.x_att is None or self._viewer_state.y_att is None:
             #return
-
-        z = self.state.layer[self._viewer_state.z_att]
-        #y = self.state.layer[self._viewer_state.y_att]
-        
-        #x1 = self.state.layer[self._viewer_state.x1_att]
-        
-        # if self._viewer_state.d_spin1 is None or self._viewer_state.d_spin2 is None:
-        #     return
-        
-        #d_spin1 = self.state.layer[self._viewer_state.d_spin1]
-        #d_spin2 = self.state.layer[self._viewer_state.d_spin2]
-        
-        if self._viewer_state.d_spin1 is None:
-            d_spin1 = 1
-        else: 
-            d_spin1 = self._viewer_state.d_spin1
-        
-        print('d_spin1', d_spin1)
         
         
-        if self._viewer_state.d_spin2 is None:
-            d_spin2 = 1
-        else: 
-            d_spin2 = self._viewer_state.d_spin2
-        
-        print('d_spin2', d_spin2)
-
-        # print(d_spin1)
-        # print(d_spin2)
-
-        # def maximum(d_spin1, d_spin2):
-        #     if d_spin1 >= d_spin2:
-        #         return
-            
-
-        
-        if d_spin1 >= d_spin2:
-            return
-            
-
-        print('DEBUG', z.shape)
-        #zlim = z[:, d_spin1:4300].mean(axis=1)
-        
-        
-        zlim = z[:, d_spin1:d_spin2].mean(axis=1)
-
-        self.artist.set_array(zlim)
-
-        # self.axes.set_xlim(np.nanmin(x), np.nanmax(x))
-        # self.axes.set_ylim(np.nanmin(y), np.nanmax(y))
-        
-        self.axes.set_xlim(-6,6)
-        self.axes.set_ylim(-6,6)
-        
-        
-        #collection.set_cmap(cmap)
-        #collection.set_norm(norm)
+        print("ATT CH LAYER ARTIST")
+        print(type(self.state.layer))
         
         fp_conf = dm.get_fiberconf_default('LCB')
         x0 = np.empty((fp_conf.nfibers,))
@@ -347,11 +298,86 @@ class MegaraLayerArtist(MatplotlibLayerArtist):
         
         offsets = np.column_stack([x0, y0])
         
-        self.artist.set_offsets(offsets)
-        
-        corners = ((-6, -6), (6, 6))
-        self.axes.update_datalim(corners)
-        self.axes.autoscale_view(tight=True)
+        if isinstance(self.state.layer, Subset):
+            ss = self.state.layer
+            print(ss.label)
+            print(ss.style)
+            print(ss.style.color)
+            print(ss.subset_state)
+            mask2 = ss.to_mask()
+            mask3 = mask2[:,0] #no vale
+            self.artist.set_offsets(offsets[mask3])
+            colors = ss.style.color
+            self.artist.set_edgecolors(colors)
+            
+        else:
+            
+            z = self.state.layer[self._viewer_state.z_att]
+            #y = self.state.layer[self._viewer_state.y_att]
+            
+            #x1 = self.state.layer[self._viewer_state.x1_att]
+            
+            # if self._viewer_state.d_spin1 is None or self._viewer_state.d_spin2 is None:
+            #     return
+            
+            #d_spin1 = self.state.layer[self._viewer_state.d_spin1]
+            #d_spin2 = self.state.layer[self._viewer_state.d_spin2]
+            
+            if self._viewer_state.d_spin1 is None:
+                d_spin1 = 1
+            else: 
+                d_spin1 = self._viewer_state.d_spin1
+            
+            print('d_spin1', d_spin1)
+            
+            
+            if self._viewer_state.d_spin2 is None:
+                d_spin2 = 1
+            else: 
+                d_spin2 = self._viewer_state.d_spin2
+            
+            print('d_spin2', d_spin2)
+    
+            # print(d_spin1)
+            # print(d_spin2)
+    
+            # def maximum(d_spin1, d_spin2):
+            #     if d_spin1 >= d_spin2:
+            #         return
+                
+    
+            
+            if d_spin1 >= d_spin2:
+                return
+            
+
+            print('DEBUG', z.shape)
+            #zlim = z[:, d_spin1:4300].mean(axis=1)
+            
+            
+            #zlim = z[:, d_spin1:d_spin2].mean(axis=1)
+            zlim = z[:, d_spin1:d_spin2].mean(axis=1)
+    
+    
+            self.artist.set_array(zlim)
+    
+            # self.axes.set_xlim(np.nanmin(x), np.nanmax(x))
+            # self.axes.set_ylim(np.nanmin(y), np.nanmax(y))
+            
+            self.axes.set_xlim(-6,6)
+            self.axes.set_ylim(-6,6)
+            
+            
+            #collection.set_cmap(cmap)
+            #collection.set_norm(norm)
+            
+            
+            
+            self.artist.set_offsets(offsets)
+            
+            corners = ((-6, -6), (6, 6))
+            self.axes.update_datalim(corners)
+            self.axes.autoscale_view(tight=True)
         
         # def make_selector(self, roi, x0, y0):
 
@@ -504,33 +530,18 @@ class MegaraDataViewer(MatplotlibDataViewer):
     tools = ['select:rectangle']
 
     def apply_roi(self, roi, override_mode=None):
-        #from glue.core.subset import roi_to_subset_state
-        print("METHOD APPLY ROI")
-        ##roi = RectangularROI(xmin=1, xmax=3, ymin=2, ymax=5)
-        print(roi, type(roi))
-        print(override_mode)
         
         datos = self.state.z_att.parent
-        print(datos, type(datos))
-        axis0 = datos.component[0]
-        subset_state = datos > 300
-        subset_state = (axis0 == 1 ) & (axis0 == 20) & (axis0 > 300)
-        fibs = [1, 23, 45, 56, 89, 200]
-        subset_state = None
+        axis0 = datos.components[0]
         
-        
-        for f in fibs:
-            subset_state = subset_state & (datos == f)
-            
-        # import megaradrp.datamodel as dm
         
         fp_conf=dm.get_fiberconf_default('LCB')
         x0 = np.empty((fp_conf.nfibers,))
         y0 = np.empty((fp_conf.nfibers,))
         
-        # Bucle para sacar las coordenadas de todas las fibras 
+        # # Bucle para sacar las coordenadas de todas las fibras 
         
-        # xfib, yfib   
+        # # xfib, yfib   
         for _, fiber in sorted(fp_conf.fibers.items()):
             idx = fiber.fibid - 1
             x0[idx] = fiber.x
@@ -538,31 +549,18 @@ class MegaraDataViewer(MatplotlibDataViewer):
         
         
         mask = roi.contains(x0, y0)
-        subset_state = [axis0 == f for f in fibs[mask]]
-        # fibs a partir de mask
-        subset_state = None
-        for f in fibs:
-             subset_state = subset_state & (axis0 == f)
+        values = mask.nonzero()
+        fibs = values[0]
+        subset_state = axis0 == fibs[0]
+        
+        
+        for f in fibs[1:]:
+            subset_state = subset_state | (axis0 == f)
+        
              
         self.apply_subset_state(subset_state,override_mode=override_mode)
 
-        #use_transform = False
-        # subset_state = roi_to_subset_state(roi,
-        #                                   x_att=self.state.x_att, x_categories=self.state.x_categories,
-        #                                   y_att=self.state.y_att, y_categories=self.state.y_categories,
-        #                                   use_pretransform=use_transform)
-
-        # subset_state = RoiSubsetState()
-        # subset_state.xatt = [-1, 0, 1]
-        # subset_state.yatt = [-1, 0, 1]
-        
-        # # from glue.core import Data
-        # # data = Data(x=[1,2,3], y=[2,3,4])
-        # # state = data.id['x'] > 1.5
-        # # state
-
-        # self.apply_subset_state(subset_state, override_mode=override_mode)
-
+ 
 
         
 # =============================================================================

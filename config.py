@@ -198,12 +198,12 @@ class MegaraLayerArtist(MatplotlibLayerArtist):
         self._viewer_state.add_callback('d_spin2', self._on_attribute_change)
 
 
-    def _on_visual_change(self, value=None):
+    def _on_visual_change_(self, value=None):
         pass
 
         
 
-    def _on_visual_change_(self, value=None):
+    def _on_visual_change(self, value=None):
         
         print('on visual change')
                 
@@ -247,6 +247,10 @@ class MegaraLayerArtist(MatplotlibLayerArtist):
 
         zlim = self.artist.get_array()
         
+        ###
+        if zlim is None or len(zlim)==0:
+            return
+        ###
         
         if self.state.percentile == 'Custom':
             percent=None
@@ -305,7 +309,7 @@ class MegaraLayerArtist(MatplotlibLayerArtist):
             print(ss.style.color)
             print(ss.subset_state)
             mask2 = ss.to_mask()
-            mask3 = mask2[:,0] #no vale
+            mask3 = mask2.any(axis=1)
             self.artist.set_offsets(offsets[mask3])
             colors = ss.style.color
             self.artist.set_edgecolors(colors)

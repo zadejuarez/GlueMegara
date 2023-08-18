@@ -188,10 +188,10 @@ class MegaraLayerArtist(MatplotlibLayerArtist):
         
         """
 
-        # Ejes
+        # Axes
         self.axes.grid(self.state.grid)
 
-        # Escala de grises y color
+        # Grayscale and colour
         if self.state.grayscale:
             cmap = matplotlib.cm.get_cmap('gray')
             self.artist.set_cmap(cmap)

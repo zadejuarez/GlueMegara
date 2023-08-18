@@ -302,8 +302,8 @@ class MegaraLayerArtist(MatplotlibLayerArtist):
 
 class MegaraViewerStateWidget(QWidget):
     """
-    En esta clase se definen los parámetros de los widgets que aparecen 
-    en el apartado Plot Options de Glue
+    This class defines the parameters of the widgets that appear
+    in the Plot Options section of Glue
     
     """
 

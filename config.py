@@ -35,7 +35,7 @@ from glue.core.subset import Subset
 
 class MegaraViewerState(MatplotlibDataViewerState):
     """
-    Esta clase contiene los datos de interés con los que se va a trabajar
+    This class contains the data of interest with which it is going to work
     
     """
 
@@ -60,7 +60,7 @@ class MegaraViewerState(MatplotlibDataViewerState):
     def _on_layers_change(self, value):
 
         """
-        Esta función se llama cuando cambia layers
+        This function is called when layers changes
         
         """
         self._z_att_helper.set_multiple_data(self.layers_data)
@@ -69,7 +69,7 @@ class MegaraViewerState(MatplotlibDataViewerState):
     def _on_attribute_change(self, value):
 
         """
-        Esta función ejecuta los cambios deseados
+        This function executes the changes on z-axis and x1
         
         """
         if self.z_att is not None:
@@ -84,8 +84,8 @@ class MegaraViewerState(MatplotlibDataViewerState):
 
 class MegaraLayerState(MatplotlibLayerState):
     """
-    En esta clase se definen las distintas opciones que pueden mostrarse
-    en el apartado Plot Layers de Glue
+    This class defines the different options that can be displayed
+    in the Plot Layers section of Glue
     
     """
 
@@ -139,8 +139,9 @@ class MegaraLayerState(MatplotlibLayerState):
 
 class MegaraLayerArtist(MatplotlibLayerArtist):
     """
-    En esta clase se llaman a los parámetros definidos en la clase anterior
-    para que se muestre su funcionalidad por pantalla en Glue
+
+    In this class, the parameters defined in the previous class are called so
+    that their functionality is displayed on screen in Glue
     
     """
 
@@ -150,10 +151,10 @@ class MegaraLayerArtist(MatplotlibLayerArtist):
 
         super(MegaraLayerArtist, self).__init__(axes, *args, **kwargs)
 
-        self.artist = vis.hexplot(axes, [], [], [], scale=0.443)  # Para visualización en hexágonos
+        self.artist = vis.hexplot(axes, [], [], [], scale=0.443)  # For display in hexagons
         self.mpl_artists.append(self.artist)
 
-        # Se añaden todos los callbacks de los parámetros para ejecutar el cambio en el visualizador
+        # All parameter callbacks are added to execute the change in the visualizer
         self.state.add_callback('grid', self._on_visual_change)
         self.state.add_callback('grayscale', self._on_visual_change)
         self.state.add_callback('stretch', self._on_visual_change)
@@ -165,7 +166,7 @@ class MegaraLayerArtist(MatplotlibLayerArtist):
         self.state.add_callback('color', self._on_visual_change)
         self.state.add_callback('alpha', self._on_visual_change)
 
-        # Configuración del plano focal. Se crean vectores vacíos para las fibras
+        # Focal plane configuration. Empty vectors are created for the fibers
         fp_conf = dm.get_fiberconf_default('LCB')
         x0 = np.empty((fp_conf.nfibers,))
         y0 = np.empty((fp_conf.nfibers,))
@@ -183,7 +184,7 @@ class MegaraLayerArtist(MatplotlibLayerArtist):
     def _on_visual_change(self, value=None):
 
         """ 
-        Esta función se utiliza para representar algunos de los parámetros definidos
+        This function is used to represent some of the parameters defined
         
         """
 
@@ -199,22 +200,22 @@ class MegaraLayerArtist(MatplotlibLayerArtist):
             cmap = matplotlib.cm.get_cmap('viridis')
             self.artist.set_cmap(cmap)
 
-        # Se define un array de la imagen 2D colapsada
+        # An array of the collapsed 2D image is defined
         zlim = self.artist.get_array()
 
-        # Esta condición es para evitar un error si se tomara un array vacío
+        # This condition is used to avoid an error if an empty array is taken.
         if zlim is None or len(zlim) == 0:
             return
 
-        # Esta condición es para evitar un error cuando el valor del percentil
-        # es customizable
+        # This condition is to avoid an error when the percentile value
+        # is customizable
         if self.state.percentile == 'Custom':
             percent = None
 
         else:
             percent = self.state.percentile
 
-        # Normalización para representación de la imagen en Matplotlib
+        # Normalization for image representation in Matplotlib
         norm = simple_norm(zlim, self.state.stretch,
                            min_cut=self.state.v_min,
                            max_cut=self.state.v_max,
@@ -235,7 +236,7 @@ class MegaraLayerArtist(MatplotlibLayerArtist):
         
         """
 
-        # Configuración del plano focal. Se crean vectores vacíos para las fibras
+        # Focal plane configuration. Empty vectors are created for the fibers
         fp_conf = dm.get_fiberconf_default('LCB')
         x0 = np.empty((fp_conf.nfibers,))
         y0 = np.empty((fp_conf.nfibers,))
@@ -248,7 +249,7 @@ class MegaraLayerArtist(MatplotlibLayerArtist):
 
         offsets = np.column_stack([x0, y0])
 
-        # Se implementa la máscara para la selección en imagen 2D y visualización en viewer
+        # The mask for the selection in 2D image and visualization in viewer is implemented
         if isinstance(self.state.layer, Subset):
             ss = self.state.layer
             print(ss.label)
@@ -265,8 +266,8 @@ class MegaraLayerArtist(MatplotlibLayerArtist):
 
             z = self.state.layer[self._viewer_state.z_att]
 
-            # Definimos el rango espectral de la imagen para los dos parámetros
-            # que dan los valores de z_att (d_spin1 y d_spin2), con botones de tipo spin
+            # We define the spectral range of the image for the two parameters that
+            # give the values of z_att (d_spin1 and d_spin2), with buttons of spin type
             if self._viewer_state.d_spin1 is None:
                 d_spin1 = 1
             else:
@@ -277,14 +278,14 @@ class MegaraLayerArtist(MatplotlibLayerArtist):
             else:
                 d_spin2 = self._viewer_state.d_spin2
 
-            if d_spin1 >= d_spin2:  # Esta condición sirve para evitar un error en la definición de zlim
+            if d_spin1 >= d_spin2:  # This condition is used to avoid an error in the definition of zlim
                 return
 
             zlim = z[:, d_spin1:d_spin2].mean(axis=1)
 
             self.artist.set_array(zlim)
 
-            # Se establecen los límites de los ejes
+            # Axis limits are set
             self.axes.set_xlim(-6, 6)
             self.axes.set_ylim(-6, 6)
 
@@ -311,7 +312,7 @@ class MegaraViewerStateWidget(QWidget):
 
         self.viewer_state = viewer_state
 
-        # Botones de tipo spin para el rango espectral 
+        # Spin type buttons for spectral range
         d_spin1 = QSpinBox(self)
 
         d_spin1.setMinimum(1)
@@ -340,7 +341,7 @@ class MegaraViewerStateWidget(QWidget):
         layout.addWidget(d_spin1)
         layout.addWidget(d_spin2)
 
-        # Conexión de la spin box
+        # Spin box connection
         self._conn1 = connect_value(self.viewer_state, 'd_spin1', d_spin1)
 
         self._conn2 = connect_value(self.viewer_state, 'd_spin2', d_spin2)
@@ -350,15 +351,15 @@ class MegaraViewerStateWidget(QWidget):
 
 class MegaraLayerStateWidget(QWidget):
     """
-    En esta clase se crean los apartados de selección de las distintas funciones
-    definidas como checkboxes o líneas de edición
+    In this class, the selection sections of the different functions 
+    defined as checkboxes or editing lines are created.
     
     """
 
     def __init__(self, layer_artist):
         super(MegaraLayerStateWidget, self).__init__()
 
-        # Se crean los botones y líneas de selección
+        # Buttons and selection lines are created
         self.checkbox = QCheckBox('Plot grid')
         self.checkbox2 = QCheckBox('Grayscale')
         self.combo1 = QComboBox()
@@ -366,7 +367,7 @@ class MegaraLayerStateWidget(QWidget):
         self.valuetext_v_min = QLineEdit()
         self.percentile = QComboBox()
 
-        # Etiquetado de los distintos apartados
+        # Labeling of the different sections
         self.nameLabel1 = QLabel(self.percentile)
         self.nameLabel1.setText('Percentil')
         self.nameLabel2 = QLabel(self.valuetext_v_max)
@@ -374,12 +375,12 @@ class MegaraLayerStateWidget(QWidget):
         self.nameLabel3 = QLabel(self.valuetext_v_min)
         self.nameLabel3.setText('v_min')
 
-        # Poscición de las etiquetas
+        # Label positions
         self.nameLabel1.move(3, -6)
         self.nameLabel2.move(3, -6)
         self.nameLabel3.move(3, -6)
 
-        # Se añaden los botones creados
+        # The created buttons are added
         layout = QVBoxLayout()
         layout.addWidget(self.checkbox)
         layout.addWidget(self.checkbox2)
@@ -392,7 +393,7 @@ class MegaraLayerStateWidget(QWidget):
 
         self.layer_state = layer_artist.state
 
-        # Conexión de los apartados creados
+        # Connection of the created sections
         self._conn1 = connect_checkable_button(self.layer_state, 'grid', self.checkbox)
         self._conn2 = connect_checkable_button(self.layer_state, 'grayscale', self.checkbox2)
         self._conn3 = connect_combo_selection(self.layer_state, 'stretch', self.combo1)
@@ -420,7 +421,7 @@ class MegaraDataViewer(MatplotlibDataViewer):
     def apply_roi(self, roi, override_mode=None):
 
         """
-        Esta función define la región de interés seleccionada por el usuario
+        This function defines the region of interest selected by the user
         
         """
 
@@ -431,7 +432,7 @@ class MegaraDataViewer(MatplotlibDataViewer):
         x0 = np.empty((fp_conf.nfibers,))
         y0 = np.empty((fp_conf.nfibers,))
 
-        # Bucle para sacar las coordenadas de todas las fibras   
+        # Loop to get the coordinates of all the fibers 
         for _, fiber in sorted(fp_conf.fibers.items()):
             idx = fiber.fibid - 1
             x0[idx] = fiber.x

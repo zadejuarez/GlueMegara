@@ -10,7 +10,7 @@ LONG_DESCRIPTION = 'Paquete para visualizador de MEGARA empleando Glue'
 setup(
        # el nombre debe coincidir con el nombre de la carpeta 	  
        #'modulomuysimple'
-        name="megara_vis_glue", 
+        name="megara_visual_glue", 
         version=VERSION,
         author="Sherezade Juarez",
         author_email="shjuarez@ucm.es",

@@ -18,7 +18,7 @@ setup(
         long_description=LONG_DESCRIPTION,
         packages=find_packages(),
         install_requires=['numpy', 'glue', 'astropy'],
-        url= 'https://github.com/zadejuarez/GlueMegara'
+        url= 'https://github.com/zadejuarez/GlueMegara/tree/zadejuarez-patch-1/megara_vis_glue'
         
 
 )

@@ -1,3 +1,4 @@
 # GlueMegara
 
-Testing
+Visualizador para MEGARA desarrollado con Glue.
+

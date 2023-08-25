@@ -2,7 +2,7 @@
 
 from setuptools import setup, find_packages
 
-VERSION = '0.0.0' 
+VERSION = '0.0.2' 
 DESCRIPTION = 'Paquete visualizador MEGARA'
 LONG_DESCRIPTION = 'Paquete para visualizador de MEGARA empleando Glue'
 
@@ -12,13 +12,13 @@ setup(
        #'modulomuysimple'
         name="megara_visual_glue", 
         version=VERSION,
-        author="Sherezade Juarez",
+        author="Sherezade JM",
         author_email="shjuarez@ucm.es",
         description=DESCRIPTION,
         long_description=LONG_DESCRIPTION,
         packages=find_packages(),
         install_requires=['numpy', 'glue', 'astropy'],
-        url= 'https://github.com/zadejuarez/GlueMegara/tree/zadejuarez-patch-2/megara_visual_glue'
+        url= 'https://github.com/zadejuarez/GlueMegara/tree/zadejuarez-patch-3/megara_visual_glue'
         
 
 )

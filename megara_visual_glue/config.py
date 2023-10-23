@@ -449,4 +449,3 @@ class MegaraDataViewer(MatplotlibDataViewer):
         self.apply_subset_state(subset_state, override_mode=override_mode)
 
 
-qt_client.add(MegaraDataViewer)

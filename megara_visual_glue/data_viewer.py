@@ -10,7 +10,6 @@ import numpy as np
 
 from qtpy.QtWidgets import QWidget, QVBoxLayout, QCheckBox, QComboBox, QLineEdit, QLabel, QSpinBox
 
-from glue.config import qt_client
 from glue.core.data_combo_helper import ComponentIDComboHelper
 
 from echo import CallbackProperty, SelectionCallbackProperty

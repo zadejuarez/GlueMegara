@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools >= 45"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "megara_visual_glue"
+version = "0.0.2"
+description = "Paquete visualizador MEGARA"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+authors = [
+  {name = "Sherezade JM", email = "shjuarez@ucm.es"},
+]
+
+dependencies = [
+   "numpy",
+   "astropy",
+   "matplotlib",
+   "megaradrp",
+   "qtpy",
+   "glueviz",
+]
+
+[project.urls]
+Homepage = "https://github.com/zadejuarez/GlueMegara"
+Repository = "https://github.com/zadejuarez/GlueMegara.git"
+
+[project.entry-points."glue.plugins"]
+MEGARA = "megara_visual_glue:setup"
+

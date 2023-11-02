@@ -10,7 +10,6 @@ import numpy as np
 
 from qtpy.QtWidgets import QWidget, QVBoxLayout, QCheckBox, QComboBox, QLineEdit, QLabel, QSpinBox
 
-from glue.config import qt_client
 from glue.core.data_combo_helper import ComponentIDComboHelper
 
 from echo import CallbackProperty, SelectionCallbackProperty
@@ -449,4 +448,3 @@ class MegaraDataViewer(MatplotlibDataViewer):
         self.apply_subset_state(subset_state, override_mode=override_mode)
 
 
-qt_client.add(MegaraDataViewer)

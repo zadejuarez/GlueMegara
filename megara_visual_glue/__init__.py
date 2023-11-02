@@ -1,5 +1,4 @@
 def setup():
-  from .meg import MegaraDataViewer
-  from .data import MegaraData
+  from .data_viewer import MegaraDataViewer
   from glue.config import qt_client
   qt_client.add(MegaraDataViewer)

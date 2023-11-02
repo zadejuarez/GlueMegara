@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "megara_visual_glue"
 version = "0.0.2"
-description = "Paquete visualizador MEGARA"
+description = "MEGARA visualization package"
 readme = "README.md"
 requires-python = ">=3.8"
 license = {text = "MIT"}

@@ -8,8 +8,6 @@ LONG_DESCRIPTION = 'Paquete para visualizador de MEGARA empleando Glue'
 
 # Configurando
 setup(
-       # el nombre debe coincidir con el nombre de la carpeta 	  
-       #'modulomuysimple'
         name="megara_visual_glue", 
         version=VERSION,
         author="Sherezade JM",
@@ -17,8 +15,13 @@ setup(
         description=DESCRIPTION,
         long_description=LONG_DESCRIPTION,
         packages=find_packages(),
-        install_requires=['numpy', 'glue', 'astropy'],
-        url= 'https://github.com/zadejuarez/GlueMegara/tree/zadejuarez-patch-3/megara_visual_glue'
-        
-
+        install_requires=[
+            'numpy', 
+            'glueviz', 
+            'astropy',
+            'matplotlib',
+            'megaradrp',
+            'qtpy',
+            ],
+        url= 'https://github.com/zadejuarez/GlueMegara'
 )

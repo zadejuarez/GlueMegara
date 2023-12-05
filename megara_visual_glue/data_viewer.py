@@ -77,9 +77,6 @@ class MegaraViewerState(MatplotlibDataViewerState):
         if self.x1_att is not None:
             self.x1_axislabel = self.x1_att.label
 
-        print(self.d_spin1)
-        print(self.d_spin2)
-
 
 class MegaraLayerState(MatplotlibLayerState):
     """
